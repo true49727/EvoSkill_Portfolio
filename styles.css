@@ -543,3 +543,66 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
            drop-shadow(0 0 42px rgba(39,169,255,.65));
   }
 }
+
+
+/* FINAL CARD-PERIMETER ORBIT
+   The orbit is a rounded rectangle that matches the card, not an ellipse.
+   The star follows the exact same geometry via JS offset-path coordinates. */
+.stage-star-orbit{
+  width:calc(min(360px,70vw) + 34px);
+  height:484px;
+  border:1px solid rgba(124,221,255,.075);
+  border-radius:50px;
+  transform:none!important;
+  animation:none!important;
+  pointer-events:none;
+  z-index:0;
+  box-sizing:border-box;
+}
+.stage-star-orbit:after{
+  inset:10px;
+  border:1px solid rgba(39,169,255,.025);
+  border-radius:42px;
+}
+.stage-star-back{
+  display:none!important;
+}
+.stage-star-front{
+  position:absolute;
+  left:0;
+  top:0;
+  width:24px;
+  height:24px;
+  margin:0;
+  z-index:4;
+  opacity:1!important;
+  animation:none!important;
+  offset-rotate:0deg;
+  offset-anchor:50% 50%;
+  transform:translate(-50%,-50%) scale(1);
+  background:radial-gradient(circle at 50% 45%,#fff 0 13%,#effcff 25%,#9beaff 46%,#27a9ff 68%,rgba(39,169,255,.1) 100%);
+  clip-path:polygon(50% 0%,61% 38%,100% 50%,61% 62%,50% 100%,39% 62%,0% 50%,39% 38%);
+  filter:drop-shadow(0 0 3px #fff)
+         drop-shadow(0 0 7px #e9fbff)
+         drop-shadow(0 0 15px rgba(124,221,255,1))
+         drop-shadow(0 0 30px rgba(39,169,255,1))
+         drop-shadow(0 0 48px rgba(39,169,255,.65));
+  will-change:offset-distance,transform;
+}
+@media(max-width:850px){
+  .stage-star-orbit{
+    width:279px;
+    height:344px;
+    border-radius:42px;
+  }
+  .stage-star-orbit:after{border-radius:34px}
+  .stage-star-front{
+    width:21px;
+    height:21px;
+    filter:drop-shadow(0 0 3px #fff)
+           drop-shadow(0 0 7px #e9fbff)
+           drop-shadow(0 0 14px rgba(124,221,255,1))
+           drop-shadow(0 0 27px rgba(39,169,255,1))
+           drop-shadow(0 0 42px rgba(39,169,255,.65));
+  }
+}
