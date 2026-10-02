@@ -106,3 +106,16 @@ document.querySelectorAll('video').forEach(video=>{
     if(activeVideo===video) activeVideo=null;
   });
 });
+
+/* Lightweight premium interaction layer */
+const progressBar=document.querySelector('.scroll-progress span');
+let progressTicking=false;
+const updateProgress=()=>{const max=document.documentElement.scrollHeight-window.innerHeight;progressBar.style.width=(max>0?(window.scrollY/max)*100:0)+'%';progressTicking=false;};
+window.addEventListener('scroll',()=>{if(!progressTicking){requestAnimationFrame(updateProgress);progressTicking=true;}},{passive:true});updateProgress();
+
+if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
+  document.querySelectorAll('.magnetic').forEach(btn=>{
+    btn.addEventListener('pointermove',e=>{const r=btn.getBoundingClientRect();btn.style.transform='translate('+(e.clientX-r.left-r.width/2)*.08+'px,'+(e.clientY-r.top-r.height/2)*.08+'px)';});
+    btn.addEventListener('pointerleave',()=>{btn.style.transform='translate(0,0)';});
+  });
+}
