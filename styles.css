@@ -64,3 +64,53 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
 .magnetic{will-change:transform}.signal-orbit{position:absolute;width:430px;height:430px;border:1px solid rgba(81,191,255,.08);border-radius:50%;transform:rotateX(68deg);pointer-events:none}.signal-orbit:before{content:"";position:absolute;inset:55px;border:1px solid rgba(81,191,255,.06);border-radius:50%}.signal-orbit span{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 16px var(--cyan)}.signal-orbit span:nth-child(1){left:9%;top:46%}.signal-orbit span:nth-child(2){right:16%;top:23%}.signal-orbit span:nth-child(3){right:28%;bottom:8%}.signal-readout{position:absolute;bottom:38px;font:600 8px "Space Grotesk";letter-spacing:.2em;color:#536a7d}.signal-readout b{color:#64ffb1;text-shadow:0 0 10px #64ffb1}
 @media(max-width:850px){.archive-hud{right:12px;bottom:12px}.archive-stats{margin-top:45px}.signal-orbit{width:280px;height:280px}.signal-readout{bottom:24px}}
 @media(max-width:520px){.archive-stats{grid-template-columns:1fr 1fr}.archive-stats div:last-child{grid-column:span 2}.archive-hud{display:none}}
+
+/* Desktop-only masonry-style columns: removes row-track gaps caused by mixed video ratios.
+   Mobile keeps the existing single-column flow below. */
+@media (min-width:851px){
+  .featured-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:20px;align-items:start}
+  .featured-column{display:flex;flex-direction:column;gap:20px;min-width:0}
+  .featured-column .project-card{min-height:0}
+  .featured-column .project-large{grid-row:auto}
+  .gallery-grid{display:grid;grid-template-columns:1.1fr .9fr 1fr;gap:18px;align-items:start}
+  .gallery-column{display:flex;flex-direction:column;gap:18px;min-width:0}
+  .gallery-column .gallery-tile{width:100%;height:auto;min-height:0;aspect-ratio:var(--media-ratio,16/9)}
+  .gallery-column .gallery-tile.tall,.gallery-column .gallery-tile.wide{grid-row:auto;grid-column:auto}
+}
+@media (max-width:850px){
+  .featured-column,.gallery-column{display:contents}
+  .featured-grid{display:grid;grid-template-columns:1fr;gap:20px}
+  .featured-column-a .project-card:nth-child(1){order:1}
+  .featured-column-b .project-card:nth-child(1){order:2}
+  .featured-column-b .project-card:nth-child(2){order:3}
+  .featured-column-a .project-card:nth-child(2){order:4}
+  .featured-column-b .project-card:nth-child(3){order:5}
+  .gallery-column:first-child .gallery-tile:nth-child(1){order:1}
+  .gallery-column:nth-child(2) .gallery-tile:nth-child(1){order:2}
+  .gallery-column:nth-child(3) .gallery-tile:nth-child(1){order:3}
+  .gallery-column:first-child .gallery-tile:nth-child(2){order:4}
+  .gallery-column:nth-child(2) .gallery-tile:nth-child(2){order:5}
+  .gallery-column:nth-child(3) .gallery-tile:nth-child(2){order:6}
+  .gallery-column:first-child .gallery-tile:nth-child(3){order:7}
+}
+
+/* Slow 3D hero-card tilt + a subtle blue star orbit. */
+.stage-card{transform-style:preserve-3d;animation:heroCardTilt 8s ease-in-out infinite}
+@keyframes heroCardTilt{
+  0%,100%{transform:rotateY(-13deg) rotateX(4deg) translateY(0)}
+  50%{transform:rotateY(13deg) rotateX(6deg) translateY(-7px)}
+}
+.stage-star-orbit{position:absolute;width:460px;height:230px;border:1px solid rgba(124,221,255,.055);border-radius:50%;transform-style:preserve-3d;animation:starOrbit 14s linear infinite;pointer-events:none;z-index:3}
+.stage-star{position:absolute;left:50%;top:-4px;width:10px;height:10px;transform:translateX(-50%) rotate(45deg);background:linear-gradient(135deg,#dff8ff,var(--blue));clip-path:polygon(50% 0%,61% 38%,100% 50%,61% 62%,50% 100%,39% 62%,0% 50%,39% 38%);filter:drop-shadow(0 0 5px rgba(124,221,255,.8));box-shadow:0 0 12px rgba(39,169,255,.55)}
+@keyframes starOrbit{
+  from{transform:rotateX(64deg) rotateZ(0deg)}
+  to{transform:rotateX(64deg) rotateZ(360deg)}
+}
+.stage-star-orbit:after{content:"";position:absolute;inset:24%;border-radius:50%;border:1px solid rgba(39,169,255,.035)}
+@media(max-width:850px){
+  .stage-star-orbit{width:315px;height:160px}
+  .stage-star{width:8px;height:8px}
+}
+@media(prefers-reduced-motion:reduce){
+  .stage-card,.stage-star-orbit{animation:none}
+}
