@@ -17,7 +17,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',
   if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth'})}
 }));
 
-
 /* Detect each video's real dimensions so portrait and landscape work keep their native ratio. */
 document.querySelectorAll('video').forEach(video=>{
   const applyRatio=()=>{
@@ -32,4 +31,55 @@ document.querySelectorAll('video').forEach(video=>{
   };
   if(video.readyState >= 1) applyRatio();
   video.addEventListener('loadedmetadata', applyRatio, {once:true});
+});
+
+/*
+ * Performance mode:
+ * Videos do not autoplay or download the full file on page load.
+ * A video starts only when the client hovers/touches it.
+ * At most two videos can be playing at the same time.
+ */
+const activeVideos=[];
+const maxActiveVideos=2;
+
+const stopVideo=video=>{
+  video.pause();
+};
+
+const startVideo=video=>{
+  const existing=activeVideos.indexOf(video);
+  if(existing!==-1){
+    activeVideos.splice(existing,1);
+  }
+
+  while(activeVideos.length>=maxActiveVideos){
+    const oldest=activeVideos.shift();
+    if(oldest) stopVideo(oldest);
+  }
+
+  activeVideos.push(video);
+  video.play().catch(()=>{});
+};
+
+document.querySelectorAll('video').forEach(video=>{
+  video.addEventListener('pointerenter',e=>{
+    if(e.pointerType==='mouse' || e.pointerType==='pen') startVideo(video);
+  });
+
+  video.addEventListener('pointerleave',e=>{
+    if(e.pointerType==='mouse' || e.pointerType==='pen') stopVideo(video);
+  });
+
+  video.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='touch') startVideo(video);
+  });
+
+  video.addEventListener('play',()=>{
+    if(!activeVideos.includes(video)) startVideo(video);
+  });
+
+  video.addEventListener('pause',()=>{
+    const index=activeVideos.indexOf(video);
+    if(index!==-1) activeVideos.splice(index,1);
+  });
 });
