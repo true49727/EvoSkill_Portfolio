@@ -70,31 +70,49 @@ document.querySelectorAll('video').forEach(video=>{
     if(e.pointerType==='mouse' || e.pointerType==='pen') stopVideo(video);
   });
 
+  /* Do not start playback on pointerdown.
+   * On mobile, pointerdown can also be the beginning of a scroll gesture;
+   * starting a large remote video here can cause an unnecessary buffer
+   * request and can make playback appear to freeze a few seconds later.
+   * The actual tap/click below is the single user gesture that starts it.
+   */
   video.addEventListener('pointerdown',e=>{
-    if(e.pointerType==='touch'){
-      lastInputWasTouch=true;
-      startVideo(video);
-    }else if(e.pointerType==='mouse'){
-      lastInputWasTouch=false;
-      startVideo(video);
-    }else{
-      startVideo(video);
-    }
+    if(e.pointerType==='touch') lastInputWasTouch=true;
   });
 
-  /* A real click OR a mobile tap enables the video's SFX/audio.
-   * The initial touch/pointerdown still starts playback muted, then the
-   * browser's click event upgrades that same user interaction to audio.
-   */
   video.addEventListener('click',()=>{
     if(activeVideo && activeVideo!==video) activeVideo.pause();
     activeVideo=video;
+
+    /* One user gesture = one play() call. Changing mute state and calling
+       play() twice in the same gesture can cause mobile browsers to restart
+       or re-buffer remote media. */
     video.muted=false;
     video.play().catch(()=>{
       video.muted=true;
       video.play().catch(()=>{});
     });
+
     window.setTimeout(()=>{lastInputWasTouch=false},400);
+  });
+
+  /* Recover gracefully from transient CDN/network stalls without resetting
+     currentTime or replacing the source. This keeps the already-buffered
+     position intact when the connection resumes. */
+  let recoveryTimer=null;
+  const recoverPlayback=()=>{
+    if(activeVideo!==video || video.paused || !video.src) return;
+    window.clearTimeout(recoveryTimer);
+    recoveryTimer=window.setTimeout(()=>{
+      if(activeVideo===video && !video.paused){
+        video.play().catch(()=>{});
+      }
+    },350);
+  };
+  video.addEventListener('waiting',recoverPlayback);
+  video.addEventListener('stalled',recoverPlayback);
+  video.addEventListener('canplay',()=>{
+    if(activeVideo===video && video.paused) video.play().catch(()=>{});
   });
 
   video.addEventListener('play',()=>{
