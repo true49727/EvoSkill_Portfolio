@@ -56,3 +56,11 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
     filter:none;
   }
 }
+
+/* Lightweight premium interaction layer */
+.scroll-progress{position:fixed;top:0;left:0;width:100%;height:2px;z-index:100;background:rgba(255,255,255,.04);pointer-events:none}.scroll-progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 12px rgba(39,169,255,.8)}
+.archive-hud{position:fixed;right:22px;bottom:22px;z-index:15;display:flex;align-items:center;gap:10px;padding:8px 11px;border:1px solid rgba(126,203,255,.13);border-radius:999px;background:rgba(3,8,14,.56);backdrop-filter:blur(12px);color:#607589;font:600 8px "Space Grotesk";letter-spacing:.14em;pointer-events:none}.archive-hud b{color:#a9dfff;font-weight:600}.archive-hud i{width:5px;height:5px;border-radius:50%;background:#64ffb1;box-shadow:0 0 9px #64ffb1}
+.archive-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:65px}.archive-stats div{border-top:1px solid var(--line);padding-top:18px}.archive-stats strong{display:block;font:500 clamp(30px,4vw,52px) "Space Grotesk";letter-spacing:-.05em;color:#dff4ff}.archive-stats span{font:600 8px "Space Grotesk";letter-spacing:.17em;color:#60768b}
+.magnetic{will-change:transform}.signal-orbit{position:absolute;width:430px;height:430px;border:1px solid rgba(81,191,255,.08);border-radius:50%;transform:rotateX(68deg);pointer-events:none}.signal-orbit:before{content:"";position:absolute;inset:55px;border:1px solid rgba(81,191,255,.06);border-radius:50%}.signal-orbit span{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 16px var(--cyan)}.signal-orbit span:nth-child(1){left:9%;top:46%}.signal-orbit span:nth-child(2){right:16%;top:23%}.signal-orbit span:nth-child(3){right:28%;bottom:8%}.signal-readout{position:absolute;bottom:38px;font:600 8px "Space Grotesk";letter-spacing:.2em;color:#536a7d}.signal-readout b{color:#64ffb1;text-shadow:0 0 10px #64ffb1}
+@media(max-width:850px){.archive-hud{right:12px;bottom:12px}.archive-stats{margin-top:45px}.signal-orbit{width:280px;height:280px}.signal-readout{bottom:24px}}
+@media(max-width:520px){.archive-stats{grid-template-columns:1fr 1fr}.archive-stats div:last-child{grid-column:span 2}.archive-hud{display:none}}
