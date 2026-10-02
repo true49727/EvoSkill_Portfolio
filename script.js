@@ -38,8 +38,8 @@ document.querySelectorAll('video').forEach(video=>{
  * Videos stay paused until the client interacts with them.
  * Only ONE video can play at a time.
  * Hover/touch starts muted playback.
- * A real mouse click enables the video's SFX/audio.
- * Touch never enables audio, including mobile "Desktop site" mode.
+ * A real mouse click or mobile tap enables the video's SFX/audio.
+ * Touch starts muted first, then the generated click/tap enables audio.
  */
 let activeVideo=null;
 let lastInputWasTouch=false;
@@ -82,17 +82,18 @@ document.querySelectorAll('video').forEach(video=>{
     }
   });
 
-  /* Touch/click on mobile must stay muted. A physical mouse click enables audio. */
+  /* A real click OR a mobile tap enables the video's SFX/audio.
+   * The initial touch/pointerdown still starts playback muted, then the
+   * browser's click event upgrades that same user interaction to audio.
+   */
   video.addEventListener('click',()=>{
-    if(!lastInputWasTouch){
-      if(activeVideo && activeVideo!==video) activeVideo.pause();
-      activeVideo=video;
-      video.muted=false;
-      video.play().catch(()=>{
-        video.muted=true;
-        video.play().catch(()=>{});
-      });
-    }
+    if(activeVideo && activeVideo!==video) activeVideo.pause();
+    activeVideo=video;
+    video.muted=false;
+    video.play().catch(()=>{
+      video.muted=true;
+      video.play().catch(()=>{});
+    });
     window.setTimeout(()=>{lastInputWasTouch=false},400);
   });
 
