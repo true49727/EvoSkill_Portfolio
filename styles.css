@@ -426,3 +426,62 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
     }
   }
 }
+
+/* Star visual correction:
+   Keep the star's face parallel to the screen while its position follows the same
+   smooth ellipse. The orbit line remains tilted in 3D; the star itself must not
+   inherit that tilt or spin. */
+.stage-star{
+  width:24px;
+  height:24px;
+  left:50%;
+  top:50%;
+  margin:0;
+  offset-path:ellipse(250px 125px at 50% 50%);
+  offset-rotate:0deg;
+  transform:translate(-50%,-50%) scale(.86);
+  background:
+    radial-gradient(circle at 50% 45%,#ffffff 0 15%,#e9fbff 28%,#9beaff 46%,#27a9ff 67%,rgba(39,169,255,.12) 100%);
+  clip-path:polygon(50% 0%,61% 38%,100% 50%,61% 62%,50% 100%,39% 62%,0% 50%,39% 38%);
+  filter:
+    drop-shadow(0 0 2px #fff)
+    drop-shadow(0 0 6px #e9fbff)
+    drop-shadow(0 0 13px rgba(124,221,255,1))
+    drop-shadow(0 0 25px rgba(39,169,255,.95))
+    drop-shadow(0 0 44px rgba(39,169,255,.55));
+  will-change:offset-distance,opacity;
+}
+.stage-star-back,
+.stage-star-front{
+  animation-name:cardEllipseOrbit;
+  animation-duration:10s;
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+}
+.stage-star-back{animation-name:cardEllipseOrbit,starRearFade}
+.stage-star-front{animation-name:cardEllipseOrbit,starFrontFade}
+@keyframes cardEllipseOrbit{
+  from{offset-distance:0%;transform:translate(-50%,-50%) scale(.86)}
+  to{offset-distance:100%;transform:translate(-50%,-50%) scale(.86)}
+}
+@keyframes starRearFade{
+  0%,49.99%{opacity:.22}
+  50%,100%{opacity:0}
+}
+@keyframes starFrontFade{
+  0%,49.99%{opacity:0}
+  50%,100%{opacity:1}
+}
+@media(max-width:850px){
+  .stage-star{
+    width:20px;
+    height:20px;
+    offset-path:ellipse(175px 87px at 50% 50%);
+    filter:
+      drop-shadow(0 0 2px #fff)
+      drop-shadow(0 0 6px #e9fbff)
+      drop-shadow(0 0 12px rgba(124,221,255,1))
+      drop-shadow(0 0 23px rgba(39,169,255,.95))
+      drop-shadow(0 0 40px rgba(39,169,255,.55));
+  }
+}
