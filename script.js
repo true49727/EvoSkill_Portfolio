@@ -42,7 +42,6 @@ document.querySelectorAll('video').forEach(video=>{
  * Touch starts muted first, then the generated click/tap enables audio.
  */
 let activeVideo=null;
-let lastInputWasTouch=false;
 
 const stopVideo=video=>{
   if(!video) return;
@@ -50,64 +49,75 @@ const stopVideo=video=>{
   if(activeVideo===video) activeVideo=null;
 };
 
-const startVideo=video=>{
+const playVideo=async(video)=>{
   if(activeVideo && activeVideo!==video) activeVideo.pause();
-  video.muted=true;
   activeVideo=video;
-  video.play().catch(()=>{});
+  video.muted=true;
+  try{
+    await video.play();
+  }catch(err){
+    /* If the browser has not buffered enough yet, retry once it can play. */
+  }
 };
 
 document.querySelectorAll('video').forEach(video=>{
-  video.addEventListener('touchstart',()=>{
-    lastInputWasTouch=true;
-  },{passive:true});
+  let downX=0, downY=0, moved=false;
 
   video.addEventListener('pointerenter',e=>{
-    if(e.pointerType==='mouse' || e.pointerType==='pen') startVideo(video);
+    if(e.pointerType==='mouse' || e.pointerType==='pen') playVideo(video);
   });
 
   video.addEventListener('pointerleave',e=>{
     if(e.pointerType==='mouse' || e.pointerType==='pen') stopVideo(video);
   });
 
-  /* Do not start playback on pointerdown.
-   * On mobile, pointerdown can also be the beginning of a scroll gesture;
-   * starting a large remote video here can cause an unnecessary buffer
-   * request and can make playback appear to freeze a few seconds later.
-   * The actual tap/click below is the single user gesture that starts it.
-   */
+  /* Mobile: start on a real tap, not merely when a finger first touches
+     the screen. This preserves normal page scrolling. */
   video.addEventListener('pointerdown',e=>{
-    if(e.pointerType==='touch') lastInputWasTouch=true;
-  });
+    if(e.pointerType==='touch'){
+      downX=e.clientX;
+      downY=e.clientY;
+      moved=false;
+    }
+  },{passive:true});
 
+  video.addEventListener('pointermove',e=>{
+    if(e.pointerType==='touch' && (Math.abs(e.clientX-downX)>12 || Math.abs(e.clientY-downY)>12)){
+      moved=true;
+    }
+  },{passive:true});
+
+  video.addEventListener('pointerup',e=>{
+    if(e.pointerType==='touch' && !moved){
+      playVideo(video);
+    }
+  },{passive:true});
+
+  /* Keep the click as a desktop/mobile fallback. If touch already started
+     playback, do NOT call play() again; simply unmute the same playback. */
   video.addEventListener('click',()=>{
     if(activeVideo && activeVideo!==video) activeVideo.pause();
     activeVideo=video;
 
-    /* One user gesture = one play() call. Changing mute state and calling
-       play() twice in the same gesture can cause mobile browsers to restart
-       or re-buffer remote media. */
-    video.muted=false;
-    video.play().catch(()=>{
+    if(video.paused){
       video.muted=true;
       video.play().catch(()=>{});
-    });
-
-    window.setTimeout(()=>{lastInputWasTouch=false},400);
+    }else{
+      video.muted=false;
+    }
   });
 
-  /* Recover gracefully from transient CDN/network stalls without resetting
-     currentTime or replacing the source. This keeps the already-buffered
-     position intact when the connection resumes. */
+  /* A remote video can briefly enter waiting/stalled state. Retry playback
+     without changing currentTime or reloading the source. */
   let recoveryTimer=null;
   const recoverPlayback=()=>{
-    if(activeVideo!==video || video.paused || !video.src) return;
-    window.clearTimeout(recoveryTimer);
-    recoveryTimer=window.setTimeout(()=>{
-      if(activeVideo===video && !video.paused){
+    if(activeVideo!==video || video.paused) return;
+    clearTimeout(recoveryTimer);
+    recoveryTimer=setTimeout(()=>{
+      if(activeVideo===video && !video.paused && video.readyState>=2){
         video.play().catch(()=>{});
       }
-    },350);
+    },500);
   };
   video.addEventListener('waiting',recoverPlayback);
   video.addEventListener('stalled',recoverPlayback);
