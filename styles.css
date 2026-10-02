@@ -64,3 +64,27 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
 .magnetic{will-change:transform}.signal-orbit{position:absolute;width:430px;height:430px;border:1px solid rgba(81,191,255,.08);border-radius:50%;transform:rotateX(68deg);pointer-events:none}.signal-orbit:before{content:"";position:absolute;inset:55px;border:1px solid rgba(81,191,255,.06);border-radius:50%}.signal-orbit span{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 16px var(--cyan)}.signal-orbit span:nth-child(1){left:9%;top:46%}.signal-orbit span:nth-child(2){right:16%;top:23%}.signal-orbit span:nth-child(3){right:28%;bottom:8%}.signal-readout{position:absolute;bottom:38px;font:600 8px "Space Grotesk";letter-spacing:.2em;color:#536a7d}.signal-readout b{color:#64ffb1;text-shadow:0 0 10px #64ffb1}
 @media(max-width:850px){.archive-hud{right:12px;bottom:12px}.archive-stats{margin-top:45px}.signal-orbit{width:280px;height:280px}.signal-readout{bottom:24px}}
 @media(max-width:520px){.archive-stats{grid-template-columns:1fr 1fr}.archive-stats div:last-child{grid-column:span 2}.archive-hud{display:none}}
+
+
+/* Mobile/Android Desktop Site: keep the desktop composition compact so
+   the tall phone viewport does not create giant empty vertical gaps. */
+@media (hover:none) and (pointer:coarse) and (min-width:851px){
+  .hero{min-height:700px;height:700px;padding-top:95px;padding-bottom:30px;align-items:center}
+  .hero-stage{height:420px}
+  .statement{min-height:460px;height:460px}
+  .section-pad{padding-top:80px;padding-bottom:80px}
+  .section-head{margin-bottom:35px}
+}
+
+/* 3D hero card tilt: slowly rocks left ↔ right while floating. */
+.stage-card{
+  transform-style:preserve-3d;
+  animation:heroCardTilt 8s ease-in-out infinite;
+}
+@keyframes heroCardTilt{
+  0%,100%{transform:rotateY(-13deg) rotateX(4deg) translateY(0)}
+  50%{transform:rotateY(13deg) rotateX(6deg) translateY(-7px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .stage-card{animation:none}
+}
