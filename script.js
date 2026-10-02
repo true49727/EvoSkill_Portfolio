@@ -34,30 +34,23 @@ document.querySelectorAll('video').forEach(video=>{
 });
 
 /*
- * Performance mode:
- * Videos do not autoplay or download the full file on page load.
- * A video starts only when the client hovers/touches it.
- * At most two videos can be playing at the same time.
+ /* Performance mode:
+ * Videos stay paused until the client interacts with them.
+ * Only ONE video can play at a time.
+ * Hover works on desktop; click/touch works even when a phone browser is
+ * switched to "Desktop site" mode, where touch can be reported differently.
  */
-const activeVideos=[];
-const maxActiveVideos=2;
+let activeVideo=null;
 
 const stopVideo=video=>{
+  if(!video) return;
   video.pause();
+  if(activeVideo===video) activeVideo=null;
 };
 
 const startVideo=video=>{
-  const existing=activeVideos.indexOf(video);
-  if(existing!==-1){
-    activeVideos.splice(existing,1);
-  }
-
-  while(activeVideos.length>=maxActiveVideos){
-    const oldest=activeVideos.shift();
-    if(oldest) stopVideo(oldest);
-  }
-
-  activeVideos.push(video);
+  if(activeVideo && activeVideo!==video) activeVideo.pause();
+  activeVideo=video;
   video.play().catch(()=>{});
 };
 
@@ -70,16 +63,21 @@ document.querySelectorAll('video').forEach(video=>{
     if(e.pointerType==='mouse' || e.pointerType==='pen') stopVideo(video);
   });
 
+  /* Reliable fallback for touch, pen, and mobile "Desktop site" mode. */
   video.addEventListener('pointerdown',e=>{
-    if(e.pointerType==='touch') startVideo(video);
+    if(e.pointerType!=='mouse') startVideo(video);
+  });
+
+  video.addEventListener('click',()=>{
+    startVideo(video);
   });
 
   video.addEventListener('play',()=>{
-    if(!activeVideos.includes(video)) startVideo(video);
+    if(activeVideo && activeVideo!==video) activeVideo.pause();
+    activeVideo=video;
   });
 
   video.addEventListener('pause',()=>{
-    const index=activeVideos.indexOf(video);
-    if(index!==-1) activeVideos.splice(index,1);
+    if(activeVideo===video) activeVideo=null;
   });
 });
