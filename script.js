@@ -71,30 +71,29 @@ document.querySelectorAll('video').forEach(video=>{
     if(e.pointerType==='mouse' || e.pointerType==='pen') stopVideo(video);
   });
 
-  /* Mobile: start on a real tap, not merely when a finger first touches
-     the screen. This preserves normal page scrolling. */
+  /* Mobile: start playback immediately on touch. Waiting for pointerup can
+     be unreliable on some Android browsers because the browser may treat the
+     gesture as scrolling before pointerup reaches the video element. */
   video.addEventListener('pointerdown',e=>{
     if(e.pointerType==='touch'){
       downX=e.clientX;
       downY=e.clientY;
       moved=false;
-    }
-  },{passive:true});
-
-  video.addEventListener('pointermove',e=>{
-    if(e.pointerType==='touch' && (Math.abs(e.clientX-downX)>12 || Math.abs(e.clientY-downY)>12)){
-      moved=true;
-    }
-  },{passive:true});
-
-  video.addEventListener('pointerup',e=>{
-    if(e.pointerType==='touch' && !moved){
       playVideo(video);
     }
   },{passive:true});
 
-  /* Keep the click as a desktop/mobile fallback. If touch already started
-     playback, do NOT call play() again; simply unmute the same playback. */
+  video.addEventListener('pointermove',e=>{
+    if(e.pointerType==='touch' && (Math.abs(e.clientX-downX)>14 || Math.abs(e.clientY-downY)>14)){
+      moved=true;
+      /* If the finger becomes a real scroll gesture, release the video. */
+      if(video===activeVideo) stopVideo(video);
+    }
+  },{passive:true});
+
+  /* Keep click as the audio/unmute fallback. A touch tap may generate a
+     synthetic click after pointerdown; if the video is already playing,
+     simply enable audio instead of starting playback twice. */
   video.addEventListener('click',()=>{
     if(activeVideo && activeVideo!==video) activeVideo.pause();
     activeVideo=video;
