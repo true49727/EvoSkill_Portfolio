@@ -485,3 +485,61 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
       drop-shadow(0 0 40px rgba(39,169,255,.55));
   }
 }
+
+/* FINAL HERO ORBIT REBUILD
+   The previous offset-path was 2D, which is why the star kept visually orbiting
+   the logo. This version uses real X-Z coordinates in a tilted 3D plane.
+   The ellipse is deliberately large enough to surround the whole rectangular card. */
+.stage-star-orbit{
+  width:520px;
+  height:760px;
+  border:1px solid rgba(124,221,255,.075);
+  border-radius:50%;
+  transform:rotateX(50deg) rotateZ(-7deg);
+  transform-style:preserve-3d;
+  animation:none!important;
+  z-index:0;
+  pointer-events:none;
+}
+.stage-star-orbit:after{
+  inset:9%;
+  border-color:rgba(39,169,255,.025);
+}
+.stage-star-back,
+.stage-star-front{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:24px;
+  height:24px;
+  margin:0;
+  z-index:1;
+  animation:none!important;
+  pointer-events:none;
+  background:radial-gradient(circle at 50% 45%,#fff 0 13%,#effcff 25%,#9beaff 46%,#27a9ff 68%,rgba(39,169,255,.1) 100%);
+  clip-path:polygon(50% 0%,61% 38%,100% 50%,61% 62%,50% 100%,39% 62%,0% 50%,39% 38%);
+  filter:drop-shadow(0 0 3px #fff)
+         drop-shadow(0 0 7px #e9fbff)
+         drop-shadow(0 0 15px rgba(124,221,255,1))
+         drop-shadow(0 0 30px rgba(39,169,255,1))
+         drop-shadow(0 0 48px rgba(39,169,255,.65));
+  will-change:transform,opacity;
+}
+.stage-star-back{z-index:1}
+.stage-star-front{z-index:3}
+@media(max-width:850px){
+  .stage-star-orbit{
+    width:350px;
+    height:520px;
+    transform:rotateX(50deg) rotateZ(-7deg);
+  }
+  .stage-star-back,.stage-star-front{
+    width:20px;
+    height:20px;
+    filter:drop-shadow(0 0 3px #fff)
+           drop-shadow(0 0 7px #e9fbff)
+           drop-shadow(0 0 14px rgba(124,221,255,1))
+           drop-shadow(0 0 27px rgba(39,169,255,1))
+           drop-shadow(0 0 42px rgba(39,169,255,.65));
+  }
+}
