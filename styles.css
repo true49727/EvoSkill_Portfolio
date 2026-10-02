@@ -381,3 +381,48 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
     }
   }
 }
+
+/* Card-bound orbit v2:
+   The star is positioned from the HERO-STAGE center and uses the exact same
+   ellipse dimensions as the visible orbit line. Its radius is horizontal
+   (translateX), not vertical, so it wraps the rectangular card rather than the logo. */
+.stage-star{
+  left:50%;
+  top:50%;
+  width:24px;
+  height:24px;
+  margin:0;
+  transform-style:preserve-3d;
+}
+.stage-star-back,
+.stage-star-front{
+  animation-name:cardStageOrbit;
+  animation-duration:10s;
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+}
+.stage-star-back{animation-name:cardStageOrbit,starRearFade}
+.stage-star-front{animation-name:cardStageOrbit,starFrontFade}
+
+@keyframes cardStageOrbit{
+  from{
+    transform:translate(-50%,-50%) rotateX(68deg) rotateZ(0deg) translateX(250px) rotate(45deg) scale(.86);
+  }
+  to{
+    transform:translate(-50%,-50%) rotateX(68deg) rotateZ(360deg) translateX(250px) rotate(405deg) scale(.86);
+  }
+}
+@media(max-width:850px){
+  .stage-star{
+    width:20px;
+    height:20px;
+  }
+  @keyframes cardStageOrbit{
+    from{
+      transform:translate(-50%,-50%) rotateX(68deg) rotateZ(0deg) translateX(175px) rotate(45deg) scale(.86);
+    }
+    to{
+      transform:translate(-50%,-50%) rotateX(68deg) rotateZ(360deg) translateX(175px) rotate(405deg) scale(.86);
+    }
+  }
+}
