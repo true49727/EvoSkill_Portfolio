@@ -16,3 +16,20 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',
   const el=document.querySelector(a.getAttribute('href'));
   if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth'})}
 }));
+
+
+/* Detect each video's real dimensions so portrait and landscape work keep their native ratio. */
+document.querySelectorAll('video').forEach(video=>{
+  const applyRatio=()=>{
+    if(video.videoWidth && video.videoHeight){
+      const ratio=(video.videoWidth/video.videoHeight).toFixed(5);
+      const wrapper=video.closest('.media-wrap,.media-tile');
+      if(wrapper){
+        wrapper.style.setProperty('--media-ratio', ratio);
+        wrapper.dataset.orientation=video.videoWidth >= video.videoHeight ? 'landscape' : 'portrait';
+      }
+    }
+  };
+  if(video.readyState >= 1) applyRatio();
+  video.addEventListener('loadedmetadata', applyRatio, {once:true});
+});
