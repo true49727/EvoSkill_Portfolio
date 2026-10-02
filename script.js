@@ -37,10 +37,12 @@ document.querySelectorAll('video').forEach(video=>{
  /* Performance mode:
  * Videos stay paused until the client interacts with them.
  * Only ONE video can play at a time.
- * Hover works on desktop; click/touch works even when a phone browser is
- * switched to "Desktop site" mode, where touch can be reported differently.
+ * Hover/touch starts muted playback.
+ * A real mouse click enables the video's SFX/audio.
+ * Touch never enables audio, including mobile "Desktop site" mode.
  */
 let activeVideo=null;
+let lastInputWasTouch=false;
 
 const stopVideo=video=>{
   if(!video) return;
@@ -50,11 +52,16 @@ const stopVideo=video=>{
 
 const startVideo=video=>{
   if(activeVideo && activeVideo!==video) activeVideo.pause();
+  video.muted=true;
   activeVideo=video;
   video.play().catch(()=>{});
 };
 
 document.querySelectorAll('video').forEach(video=>{
+  video.addEventListener('touchstart',()=>{
+    lastInputWasTouch=true;
+  },{passive:true});
+
   video.addEventListener('pointerenter',e=>{
     if(e.pointerType==='mouse' || e.pointerType==='pen') startVideo(video);
   });
@@ -63,13 +70,30 @@ document.querySelectorAll('video').forEach(video=>{
     if(e.pointerType==='mouse' || e.pointerType==='pen') stopVideo(video);
   });
 
-  /* Reliable fallback for touch, pen, and mobile "Desktop site" mode. */
   video.addEventListener('pointerdown',e=>{
-    if(e.pointerType!=='mouse') startVideo(video);
+    if(e.pointerType==='touch'){
+      lastInputWasTouch=true;
+      startVideo(video);
+    }else if(e.pointerType==='mouse'){
+      lastInputWasTouch=false;
+      startVideo(video);
+    }else{
+      startVideo(video);
+    }
   });
 
+  /* Touch/click on mobile must stay muted. A physical mouse click enables audio. */
   video.addEventListener('click',()=>{
-    startVideo(video);
+    if(!lastInputWasTouch){
+      if(activeVideo && activeVideo!==video) activeVideo.pause();
+      activeVideo=video;
+      video.muted=false;
+      video.play().catch(()=>{
+        video.muted=true;
+        video.play().catch(()=>{});
+      });
+    }
+    window.setTimeout(()=>{lastInputWasTouch=false},400);
   });
 
   video.addEventListener('play',()=>{
