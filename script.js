@@ -132,7 +132,7 @@ if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
   const star=document.querySelector('.stage-star-front');
   if(!stage || !card || !orbit || !star) return;
 
-  const duration=11000;
+  const duration=15714;
   let startTime=null;
   let pathKey='';
 
