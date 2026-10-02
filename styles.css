@@ -42,3 +42,17 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
   .media-wrap,.featured-grid .project-card:nth-child(4) .media-wrap,.featured-grid .project-card:nth-child(5) .media-wrap{min-height:0}
   .gallery-grid{grid-auto-rows:auto}
 }
+
+/* Touch devices: don't let tap-triggered :hover make videos/cards grow. */
+@media (hover:none){
+  .project-card:hover .media-wrap,
+  .gallery-tile:hover{
+    transform:none;
+    box-shadow:0 20px 70px rgba(0,0,0,.25);
+  }
+  .project-card:hover .media-wrap video,
+  .media-tile:hover video{
+    transform:none;
+    filter:none;
+  }
+}
