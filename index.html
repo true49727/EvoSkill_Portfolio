@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#05080f" />
+  <title>EvoSkill — Creative Portfolio</title>
+  <meta name="description" content="EvoSkill — premium creative work portfolio." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="cursor-glow"></div>
+
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="EvoSkill home">
+      <span class="brand-mark"><img src="assets/logo.png" alt="EvoSkill logo"></span>
+      <span>EVOSKILL</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#work">Selected work</a>
+      <a href="#gallery">Gallery</a>
+    </nav>
+    <button class="nav-pill" onclick="document.querySelector('#work').scrollIntoView({behavior:'smooth'})">Explore work <span>↗</span></button>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-orbit orbit-a"></div>
+      <div class="hero-orbit orbit-b"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-content">
+        <p class="eyebrow"><span></span> CREATIVE PORTFOLIO / 2026</p>
+        <h1>Ideas, engineered<br><em>to stand out.</em></h1>
+        <p class="hero-copy">A visual archive of EvoSkill's creative work — designed to turn attention into brand value.</p>
+        <div class="hero-actions">
+          <a class="primary-btn" href="#work">View selected work <span>↓</span></a>
+          <div class="hero-note"><span class="live-dot"></span> Portfolio preview</div>
+        </div>
+      </div>
+      <div class="hero-stage">
+        <div class="stage-ring ring-1"></div>
+        <div class="stage-ring ring-2"></div>
+        <div class="stage-card">
+          <img src="assets/logo.png" alt="EvoSkill mark">
+          <div class="stage-card-label">EVOSKILL<br><small>DESIGN × VIDEO</small></div>
+        </div>
+      </div>
+      <div class="hero-bottom">
+        <span>SCROLL TO EXPLORE</span>
+        <span class="line"></span>
+        <span>01 / 04</span>
+      </div>
+    </section>
+
+    <section class="intro section-pad">
+      <div class="section-kicker">THE ARCHIVE</div>
+      <div class="intro-grid">
+        <h2>A portfolio built<br>around <span>impact.</span></h2>
+        <p>This first version is intentionally a UI shell. Your real projects, videos, thumbnails and case studies can be dropped into the marked slots later without rebuilding the visual system.</p>
+      </div>
+    </section>
+
+    <section id="work" class="work section-pad">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">01 — SELECTED WORK</div>
+          <h2>Featured <span>projects.</span></h2>
+        </div>
+        <p>Reserved for your strongest past work.</p>
+      </div>
+
+      <div class="featured-grid">
+        <article class="project-card project-large">
+          <div class="media-placeholder"><span>PROJECT 01</span><i>+</i></div>
+          <div class="project-meta"><span>01 / FEATURED</span><strong>Your best project goes here</strong></div>
+        </article>
+        <article class="project-card">
+          <div class="media-placeholder blue"><span>PROJECT 02</span><i>+</i></div>
+          <div class="project-meta"><span>02 / FEATURED</span><strong>High-impact work slot</strong></div>
+        </article>
+        <article class="project-card">
+          <div class="media-placeholder dark"><span>PROJECT 03</span><i>+</i></div>
+          <div class="project-meta"><span>03 / FEATURED</span><strong>Signature creative slot</strong></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="statement">
+      <div class="statement-glow"></div>
+      <p class="eyebrow"><span></span> EVOSKILL / CREATIVE SYSTEM</p>
+      <h2>Make the first<br><em>impression count.</em></h2>
+    </section>
+
+    <section id="gallery" class="gallery section-pad">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">02 — WORK GALLERY</div>
+          <h2>The wider <span>archive.</span></h2>
+        </div>
+        <p>Image and video slots ready for your portfolio assets.</p>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="gallery-tile tall"><span>IMAGE / VIDEO 01</span><button>+</button></div>
+        <div class="gallery-tile"><span>IMAGE / VIDEO 02</span><button>+</button></div>
+        <div class="gallery-tile wide"><span>IMAGE / VIDEO 03</span><button>+</button></div>
+        <div class="gallery-tile"><span>IMAGE / VIDEO 04</span><button>+</button></div>
+        <div class="gallery-tile tall"><span>IMAGE / VIDEO 05</span><button>+</button></div>
+        <div class="gallery-tile"><span>IMAGE / VIDEO 06</span><button>+</button></div>
+      </div>
+    </section>
+
+    <section class="closing section-pad">
+      <div class="closing-card">
+        <div class="closing-orb"></div>
+        <div>
+          <div class="section-kicker">03 — NEXT LAYER</div>
+          <h2>More work.<br><span>More proof.</span></h2>
+        </div>
+        <p>Content, case studies, services and conversion sections can be added after the visual direction is approved.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="brand"><span class="brand-mark"><img src="assets/logo.png" alt=""></span><span>EVOSKILL</span></div>
+    <span>CREATIVE PORTFOLIO / UI PREVIEW</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
