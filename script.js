@@ -119,3 +119,56 @@ if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
     btn.addEventListener('pointerleave',()=>{btn.style.transform='translate(0,0)';});
   });
 }
+
+/* FINAL 3D CARD ORBIT ENGINE
+ * The orbit is parameterized continuously with sin/cos in X-Z space.
+ * This avoids polygonal keyframes and avoids 2D offset-path, while keeping
+ * the star upright. Two visual copies provide deterministic card occlusion.
+ */
+(()=>{
+  const orbitBack=document.querySelector('.stage-star-back');
+  const orbitFront=document.querySelector('.stage-star-front');
+  if(!orbitBack || !orbitFront) return;
+
+  let startTime=null;
+  const duration=10000;
+
+  const frame=(now)=>{
+    if(startTime===null) startTime=now;
+    const t=((now-startTime)%duration)/duration;
+    const theta=t*Math.PI*2;
+
+    const mobile=window.innerWidth<=850;
+    const rx=mobile?175:260;
+    const rz=mobile?260:380;
+
+    const x=rx*Math.cos(theta);
+    const z=rz*Math.sin(theta);
+
+    /* Positive Z is toward the viewer. */
+    const frontDepth=Math.max(0,z);
+    const backDepth=Math.max(0,-z);
+    const scale=.86 + (frontDepth/rz)*.28;
+    const backOpacity=.12 + (backDepth/rz)*.22;
+
+    /* Tilt the orbit plane in 3D, then cancel that tilt on the star itself
+       so the four-point star always faces the viewer correctly. */
+    const base=
+      'translate(-50%,-50%) '+
+      'rotateX(50deg) rotateZ(-7deg) '+
+      'translate3d('+x.toFixed(2)+'px,0,'+z.toFixed(2)+'px) '+
+      'rotateZ(7deg) rotateX(-50deg) '+
+      'rotate(45deg) scale('+scale.toFixed(3)+')';
+
+    orbitBack.style.transform=base;
+    orbitFront.style.transform=base;
+
+    /* The rectangular card sits between these two layers. */
+    orbitBack.style.opacity=(z<0?backOpacity:0).toFixed(3);
+    orbitFront.style.opacity=(z>=0?1:0);
+
+    requestAnimationFrame(frame);
+  };
+
+  requestAnimationFrame(frame);
+})();
