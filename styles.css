@@ -153,3 +153,71 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
     to{transform:translate(-50%,-50%) rotate(360deg) translateY(-175px) rotate(405deg)}
   }
 }
+
+/* Final 3D hero-star treatment:
+   The orbit is a tilted, mostly X-Z plane. The path stays fixed; only the star revolves.
+   Two synchronized star layers handle front/back occlusion so the card naturally hides the rear half. */
+.hero-stage{transform-style:preserve-3d}
+.stage-card{z-index:2}
+.stage-star-orbit{
+  width:470px;
+  height:235px;
+  border:1px solid rgba(124,221,255,.075);
+  border-radius:50%;
+  transform:rotateX(72deg) rotateZ(-9deg);
+  animation:none;
+  pointer-events:none;
+  z-index:1;
+}
+.stage-star-orbit:after{
+  inset:12%;
+  border-color:rgba(39,169,255,.028);
+}
+.stage-star{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:21px;
+  height:21px;
+  margin:0;
+  background:linear-gradient(135deg,#f2fcff 0%,#9eeaff 38%,#27a9ff 100%);
+  clip-path:polygon(50% 0%,61% 38%,100% 50%,61% 62%,50% 100%,39% 62%,0% 50%,39% 38%);
+  filter:drop-shadow(0 0 5px rgba(225,250,255,.98))
+         drop-shadow(0 0 13px rgba(39,169,255,.9))
+         drop-shadow(0 0 27px rgba(39,169,255,.48));
+  pointer-events:none;
+  transform-origin:50% 50%;
+  animation:cardStarOrbit 10s linear infinite;
+  will-change:transform,opacity;
+}
+.stage-star-back{z-index:1;animation-name:cardStarOrbit,starBackVisibility;animation-duration:10s,10s;animation-timing-function:linear,linear;animation-iteration-count:infinite,infinite}
+.stage-star-front{z-index:3;animation-name:cardStarOrbit,starFrontVisibility;animation-duration:10s,10s;animation-timing-function:linear,linear;animation-iteration-count:infinite,infinite}
+@keyframes cardStarOrbit{
+  from{transform:translate(-50%,-50%) rotate(0deg) translateY(-117px) rotate(45deg)}
+  to{transform:translate(-50%,-50%) rotate(360deg) translateY(-117px) rotate(405deg)}
+}
+@keyframes starBackVisibility{
+  0%,46%{opacity:1}
+  50%,96%{opacity:0}
+  100%{opacity:1}
+}
+@keyframes starFrontVisibility{
+  0%,46%{opacity:0}
+  50%,96%{opacity:1}
+  100%{opacity:0}
+}
+@media(max-width:850px){
+  .stage-star-orbit{
+    width:335px;
+    height:175px;
+    transform:rotateX(72deg) rotateZ(-9deg);
+  }
+  .stage-star{
+    width:17px;
+    height:17px;
+  }
+  @keyframes cardStarOrbit{
+    from{transform:translate(-50%,-50%) rotate(0deg) translateY(-87px) rotate(45deg)}
+    to{transform:translate(-50%,-50%) rotate(360deg) translateY(-87px) rotate(405deg)}
+  }
+}
