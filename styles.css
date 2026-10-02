@@ -114,3 +114,42 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
 @media(prefers-reduced-motion:reduce){
   .stage-card,.stage-star-orbit{animation:none}
 }
+
+/* Touch-device desktop mode: compact the two oversized vertical stages without changing
+   the normal mobile or real desktop breakpoints. */
+@media (hover:none) and (pointer:coarse) and (min-width:851px){
+  .hero{min-height:820px;padding-top:105px;padding-bottom:35px;align-items:center}
+  .hero-stage{height:500px}
+  .statement{min-height:58vh}
+  .section-pad{padding-top:105px;padding-bottom:105px}
+}
+
+/* Hero card orbital star: the ellipse stays fixed; only the star travels around it. */
+.stage-star-orbit{
+  width:420px;height:520px;
+  border-color:rgba(124,221,255,.09);
+  transform:rotateZ(-12deg);
+  animation:none;
+}
+.stage-star-orbit:after{inset:8%;border-color:rgba(39,169,255,.025)}
+.stage-star{
+  left:50%;top:50%;
+  width:15px;height:15px;
+  transform:translate(-50%,-50%) translateY(-260px) rotate(45deg);
+  filter:drop-shadow(0 0 4px rgba(124,221,255,.95))
+         drop-shadow(0 0 10px rgba(39,169,255,.75))
+         drop-shadow(0 0 18px rgba(39,169,255,.35));
+  animation:cardStarOrbit 10s linear infinite;
+}
+@keyframes cardStarOrbit{
+  from{transform:translate(-50%,-50%) rotate(0deg) translateY(-260px) rotate(45deg)}
+  to{transform:translate(-50%,-50%) rotate(360deg) translateY(-260px) rotate(405deg)}
+}
+@media(max-width:850px){
+  .stage-star-orbit{width:285px;height:350px;transform:rotateZ(-12deg)}
+  .stage-star{width:12px;height:12px;transform:translate(-50%,-50%) translateY(-175px) rotate(45deg)}
+  @keyframes cardStarOrbit{
+    from{transform:translate(-50%,-50%) rotate(0deg) translateY(-175px) rotate(45deg)}
+    to{transform:translate(-50%,-50%) rotate(360deg) translateY(-175px) rotate(405deg)}
+  }
+}
