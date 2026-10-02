@@ -120,52 +120,88 @@ if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
   });
 }
 
-/* FINAL 3D CARD ORBIT ENGINE
- * The orbit is parameterized continuously with sin/cos in X-Z space.
- * This avoids polygonal keyframes and avoids 2D offset-path, while keeping
- * the star upright. Two visual copies provide deterministic card occlusion.
+/* FINAL CARD-PERIMETER ORBIT ENGINE
+ * The star now follows a real rounded-rectangle path derived from the
+ * actual hero card dimensions. No ellipse, no 3D XYZ approximation,
+ * no polygonal keyframes.
  */
 (()=>{
-  const orbitBack=document.querySelector('.stage-star-back');
-  const orbitFront=document.querySelector('.stage-star-front');
-  if(!orbitBack || !orbitFront) return;
+  const stage=document.querySelector('.hero-stage');
+  const card=document.querySelector('.stage-card');
+  const orbit=document.querySelector('.stage-star-orbit');
+  const star=document.querySelector('.stage-star-front');
+  if(!stage || !card || !orbit || !star) return;
 
+  const duration=11000;
   let startTime=null;
-  const duration=10000;
+  let pathKey='';
+
+  const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+
+  const syncGeometry=()=>{
+    const stageRect=stage.getBoundingClientRect();
+    const cardRect=card.getBoundingClientRect();
+
+    /* Give the star a small breathing room outside the card. */
+    const gap=17;
+    const w=cardRect.width + gap*2;
+    const h=cardRect.height + gap*2;
+    const r=clamp(Math.min(42,w/2-2,h/2-2),20,42);
+
+    /* Orbit line is centered on the card's actual visual box. */
+    orbit.style.width=w+'px';
+    orbit.style.height=h+'px';
+    orbit.style.left=((cardRect.left-stageRect.left)+(cardRect.width-w)/2)+'px';
+    orbit.style.top=((cardRect.top-stageRect.top)+(cardRect.height-h)/2)+'px';
+
+    /* offset-path coordinates use the hero-stage as the containing block.
+       Start at the top-right corner and travel clockwise around the rounded
+       rectangle. Cubic curves approximate quarter-circle corners. */
+    const x0=cardRect.left-stageRect.left-gap;
+    const y0=cardRect.top-stageRect.top-gap;
+    const x1=x0+w;
+    const y1=y0+h;
+    const k=.5522847498;
+    const c=r*k;
+
+    const d=[
+      'M',x0+r,y0,
+      'L',x1-r,y0,
+      'C',x1-r+c,y0,x1,y0+r-c,x1,y0+r,
+      'L',x1,y1-r,
+      'C',x1,y1-r+c,x1-r+c,y1,x1-r,y1,
+      'L',x0+r,y1,
+      'C',x0+r-c,y1,x0,y1-r+c,x0,y1-r,
+      'L',x0,y0+r,
+      'C',x0,y0+r-c,x0+r-c,y0,x0+r,y0,
+      'Z'
+    ].join(' ');
+
+    const key=[Math.round(x0),Math.round(y0),Math.round(w),Math.round(h),Math.round(r)].join('|');
+    if(key!==pathKey){
+      star.style.offsetPath='path("'+d.replace(/"/g,'')+'")';
+      star.style.offsetDistance='0%';
+      pathKey=key;
+    }
+  };
+
+  const resizeObserver=new ResizeObserver(syncGeometry);
+  resizeObserver.observe(stage);
+  resizeObserver.observe(card);
+  window.addEventListener('resize',syncGeometry,{passive:true});
+  syncGeometry();
 
   const frame=(now)=>{
     if(startTime===null) startTime=now;
-    const t=((now-startTime)%duration)/duration;
-    const theta=t*Math.PI*2;
+    const progress=((now-startTime)%duration)/duration;
 
-    const mobile=window.innerWidth<=850;
-    const rx=mobile?175:260;
-    const rz=mobile?260:380;
+    star.style.offsetDistance=(progress*100).toFixed(3)+'%';
 
-    const x=rx*Math.cos(theta);
-    const z=rz*Math.sin(theta);
-
-    /* Positive Z is toward the viewer. */
-    const frontDepth=Math.max(0,z);
-    const backDepth=Math.max(0,-z);
-    const scale=.86 + (frontDepth/rz)*.28;
-    const backOpacity=.12 + (backDepth/rz)*.22;
-
-    /* Tilt the orbit plane in 3D, then cancel that tilt on the star itself
-       so the four-point star always faces the viewer correctly. */
-    const base=
-      'translate(-50%,-50%) '+
-      'rotateX(50deg) rotateZ(-7deg) '+
-      'translate3d('+x.toFixed(2)+'px,0,'+z.toFixed(2)+'px) '+
-      'rotateZ(7deg) rotateX(-50deg) '+
-      'rotate(45deg) scale('+scale.toFixed(3)+')';
-
-    orbitBack.style.transform=base;
-    orbitFront.style.transform=base;
-
-    /* The rectangular card sits between these two layers. */
-    orbitBack.style.opacity=(z<0?backOpacity:0).toFixed(3);
-    orbitFront.style.opacity=(z>=0?1:0);
+    /* Subtle depth illusion: slightly larger along the lower half, while
+       keeping the star itself visually flat and upright. */
+    const depth=Math.sin(progress*Math.PI*2);
+    const scale=(1 + Math.max(0,depth)*.16).toFixed(3);
+    star.style.transform='translate(-50%,-50%) scale('+scale+')';
 
     requestAnimationFrame(frame);
   };
