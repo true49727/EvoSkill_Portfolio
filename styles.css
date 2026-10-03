@@ -94,3 +94,31 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
 
 
 
+
+
+/* Direct contact section */
+.contact{position:relative}
+.contact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:42px}
+.contact-card{display:flex;align-items:center;gap:17px;min-height:92px;padding:18px 20px;border:1px solid rgba(126,203,255,.1);border-radius:22px;background:linear-gradient(145deg,rgba(10,25,39,.72),rgba(3,9,16,.58));box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 18px 60px rgba(0,0,0,.16);color:#dff4ff;text-decoration:none;transition:transform .35s ease,border-color .35s ease,background .35s ease,box-shadow .35s ease}
+.contact-card:hover{transform:translateY(-5px);border-color:rgba(100,210,255,.28);background:linear-gradient(145deg,rgba(12,32,49,.88),rgba(3,10,18,.72));box-shadow:0 22px 70px rgba(0,0,0,.3),0 0 28px rgba(39,169,255,.06)}
+.contact-icon{width:50px;height:50px;display:grid;place-items:center;flex:0 0 50px;border:1px solid rgba(126,203,255,.13);border-radius:16px;background:rgba(7,17,27,.8);color:#8fe4ff;box-shadow:0 0 22px rgba(39,169,255,.07)}
+.contact-icon svg{width:26px;height:26px}
+.contact-icon.whatsapp{color:#64ffb1}
+.contact-icon.gmail{color:#ff8f8f}
+.contact-icon.instagram{color:#e3a7ff}
+.contact-icon.telegram{color:#73cfff}
+.contact-card span:nth-child(2){display:flex;flex-direction:column;gap:5px;min-width:0}
+.contact-card b{font:600 14px "Space Grotesk";letter-spacing:.02em;color:#e8f7ff}
+.contact-card small{font:500 11px "Space Grotesk";letter-spacing:.03em;color:#71879a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contact-card>i{margin-left:auto;font-style:normal;font-size:17px;color:#5f7b91;transition:transform .3s ease,color .3s ease}
+.contact-card:hover>i{transform:translate(3px,-3px);color:#8fe4ff}
+.copyright{margin-top:20px;font:600 8px "Space Grotesk";letter-spacing:.18em;color:#4f6578;text-align:right}
+@media(max-width:700px){
+  .contact-grid{grid-template-columns:1fr;margin-top:30px}
+  .contact-card{min-height:82px;padding:15px 16px}
+  .contact-icon{width:46px;height:46px;flex-basis:46px;border-radius:14px}
+  .contact-icon svg{width:24px;height:24px}
+  .contact-card b{font-size:13px}
+  .contact-card small{font-size:10px}
+  .copyright{text-align:center;margin-top:16px}
+}
