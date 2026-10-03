@@ -97,7 +97,7 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
 .parallax-space{
   position:fixed;
   inset:0;
-  z-index:-1;
+  z-index:0;
   overflow:hidden;
   pointer-events:none;
 }
@@ -143,3 +143,9 @@ footer{border-top:1px solid var(--line);padding:35px 7vw;display:flex;justify-co
 @media(prefers-reduced-motion:reduce){
   .parallax-stars{transform:none!important}
 }
+
+
+/* Keep the decorative layer above the page background but behind all content. */
+.parallax-space{isolation:isolate}
+body{position:relative}
+body > *:not(.parallax-space){position:relative;z-index:1}
