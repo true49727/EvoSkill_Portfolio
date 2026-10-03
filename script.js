@@ -119,3 +119,27 @@ if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
     btn.addEventListener('pointerleave',()=>{btn.style.transform='translate(0,0)';});
   });
 }
+
+
+/* Lightweight depth parallax for the decorative star layers.
+   Content and video playback are untouched. */
+(()=>{
+  const layers=[...document.querySelectorAll('.parallax-stars[data-parallax-speed]')];
+  if(!layers.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let ticking=false;
+  const update=()=>{
+    const y=window.scrollY;
+    layers.forEach(layer=>{
+      const speed=Number(layer.dataset.parallaxSpeed)||0;
+      layer.style.transform='translate3d(0,'+(-y*speed).toFixed(2)+'px,0)';
+    });
+    ticking=false;
+  };
+  window.addEventListener('scroll',()=>{
+    if(!ticking){
+      requestAnimationFrame(update);
+      ticking=true;
+    }
+  },{passive:true});
+  update();
+})();
